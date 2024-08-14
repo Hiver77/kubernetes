@@ -1,2 +1,0 @@
-# kubernetes
-Spark on Kubernetes
