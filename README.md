@@ -33,8 +33,7 @@ ir a las opciones de configuración de Docker y habilitar el kubernetes engine: 
 [here] (https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/)
 
 Puedes validar la instalación para los demás Sistemas operativos.
-
-Una vez instalado kubectl puedes valir que en realidad se esta usando el contexto de docker, sino por favor configuralo:
+Una vez instalado kubectl puedes ver que en realidad se esta usando el contexto de docker, de lo contrario configuralo:
 
 kubectl config get-contexts
 kubectl config use-context docker-desktop
