@@ -6,7 +6,9 @@ This is a repo containing the necessary things to get you up and running with sp
 
 - Have docker desktop for mac installed [here](https://docs.docker.com/desktop/install/mac-install/).
 - Enable the Kubernetes cluster within docker desktop [here](https://docs.docker.com/desktop/kubernetes/).
+- Have Kubetctl [here] (https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/)
 - Install helm with brew following instructions [here](https://docs.docker.com/desktop/install/mac-install/).
+
 
 ## Now to get it installed
 
@@ -15,12 +17,26 @@ This is a repo containing the necessary things to get you up and running with sp
 ```console
 ### Add bitnami repo to your own repository
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install spark-release bitnami/spark --namespace spark --create-namespace
+helm install spark-release bitnami/spark --set worker.replicaCount=1 --namespace spark --create-namespace
+
+### uninstall all pods for release name:
+helm ls -n spark
+helm uninstall spark-release -n spark
+
+### Check if kubernetes is running
+kubectl get nodes -n spark
 ```
 
-2. Run spark "hello-word"
+2. Run spark-pi example:
+This code is an example of how to calculate the approximate value of Pi using a Monte Carlo method. 
+Inputs: number of partitions which data will be separeted and it works to calculate number of samples
 
-kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
+How Can I get spark master url?
+kubectl get svc -n spark
+spark-release-master-svc:7077
+
+Run this command in your terminal.
+kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://SPARK_MASTER_URL \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 50
