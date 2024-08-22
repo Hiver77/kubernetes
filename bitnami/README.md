@@ -35,8 +35,8 @@ How Can I get spark master url?
 kubectl get svc -n spark
 spark-release-master-svc:7077
 
-Run this command in your terminal.
-kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://SPARK_MASTER_URL \
+Run this command in your terminal
+kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 50
@@ -45,6 +45,7 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/src/main/python/pi.py 50
+
 
 3. enable Kubernetes dashboard
 ```console
@@ -82,6 +83,10 @@ go to URL: 127.0.0.1:8081
 kubectl cp pysparkexample.py spark-release-master-0:/opt/bitnami/spark/tmp -n spark
 
 kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 /opt/bitnami/spark/tmp/pysparkexample.py
-  --conf spark.kubernetes.container.image=bitnami/spark:3 \
-  --class org.apache.spark.examples.SparkPi
 
+6. enable interactive pyspark shell 
+6.1 copy new pyspark bash script
+kubectl cp pyspark spark-release-master-0:/opt/bitnami/spark/pyspark_shell -n spark
+6.2 Move to new location opt/bitnami/spark/pyspark_shell and run
+./pyspark
+6.3 run pysparkexample_

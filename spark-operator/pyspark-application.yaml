@@ -6,7 +6,8 @@ metadata:
 spec:
   type: Python
   pythonVersion: "3"
-  image: "hiver77/exercise:spark-custom2"
+  mode: cluster
+  image: "hiver77/exercise:spark-custom"
   imagePullPolicy: Always
   mainApplicationFile: "local:///app/pysparkexample.py"
   sparkVersion: "3.1.1"

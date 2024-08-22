@@ -14,7 +14,7 @@ This is a repo containing the necessary things to get you up and running with sp
 
 ```console
 ### Add bitnami repo to your own repository
-helm install spark-release-operator spark-operator/spark-operator --namespace spark-operator--create-namespace --set webhook.enable=true
+helm install spark-kuberney spark-operator/spark-operator --namespace spark-kuberney --create-namespace --set webhook.enable=true
 ```
 
 2. Modify the pyspark script **pysparkexample.py** , add your own code and save the changes.
@@ -32,9 +32,9 @@ docker push {YOUR-DOCKER-REPO}:spark-custom
 5. Deploy the file
 
 ```console
-kubectl delete sparkapplication spark-custom-example -n spark
-kubectl apply -f pyspark-application.yaml
-kubectl logs spark-custom-example-driver -n spark -f
+kubectl delete sparkapplication spark-custom-example -n spark-kuberney
+kubectl apply -f pyspark-application.yaml -n spark-kuberney
+kubectl logs spark-custom-example-driver -n spark-kuberney -f
 ```
 6. Check the application pods and the logs
 
