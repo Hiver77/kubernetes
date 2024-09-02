@@ -137,14 +137,14 @@ run in your terminal:
 kubectl cp config/pyspark spark-release-master-0:/opt/bitnami/spark/tmp -n spark
 6.2 go to Docker and open master container, then Move to new location opt/bitnami/spark/tmp 
 
-![Master_container](docs/master_container.png)
+![Master container](docs/master_container.png)
 
 6.3 Grant permission
 now, in container docker terminal type
 chmod 777 pyspark
 6.3 ./pyspark
 
-![pyspark_shell](docs/pyspark_shell.png)
+![pyspark shell](../docs/pyspark_shell.png)
 
 6.4 run the pysparkexample_terminal.py script line by line to play with terminal
 
