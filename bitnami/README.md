@@ -125,7 +125,7 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
 Go to Spark-master URL: http://$HOSTNAME/"
 and check your workloads
 
-![Spark UI](docs/spark_UI.png)
+![Spark UI](../docs/spark_UI.png)
 
 
 6. Enable interactive pyspark shell 
@@ -137,7 +137,7 @@ run in your terminal:
 kubectl cp config/pyspark spark-release-master-0:/opt/bitnami/spark/tmp -n spark
 6.2 go to Docker and open master container, then Move to new location opt/bitnami/spark/tmp 
 
-![Master container](docs/master_container.png)
+![Master container](../docs/master_container.png)
 
 6.3 Grant permission
 now, in container docker terminal type
