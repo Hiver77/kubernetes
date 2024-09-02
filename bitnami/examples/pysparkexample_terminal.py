@@ -3,13 +3,11 @@ from pyspark.sql.functions import count, avg, sum, max, min
 
 spark = SparkSession.builder \
     .appName("RandomDataAggregation") \
-    .master("spark://spark-release-master-svc:7077") \
-    .config("spark.submit.deployMode","cluster") \
     .getOrCreate()
 for i in range(0,10):
     data = [
         (i, f"name_{i}", i % 3)  # Simple schema: id, name, category
-        for i in range(100000)
+        for i in range(1000)
     ]
     df = spark.createDataFrame(data, ["id", "name", "category"])
     count_result = df.count()
@@ -28,4 +26,11 @@ for i in range(0,10):
         sum("id").alias("sum_id")
     )
     grouped_df.show()
+    spark.stop()
 
+
+spark = SparkSession.builder \
+    .appName("RandomDataAggregation") \
+    .master("spark://spark-release-master-svc:7077") \
+    .config("spark.submit.deployMode","cluster") \
+    .getOrCreate()
