@@ -29,7 +29,7 @@ On the other hand you can setup the number of workers that you want and the reso
 ### Add bitnami repo to your own repository
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install spark-release bitnami/spark -f values.yaml  --namespace spark --create-namespace
+helm install spark-release bitnami/spark -f config/values.yaml  --namespace spark --create-namespace
 
 You can choose the number of workers to deploy as helm parameters:
 --set worker.replicaCount=2
