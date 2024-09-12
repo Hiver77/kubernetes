@@ -5,7 +5,7 @@ master:
     -Dspark.ui.reverseProxy=true
     -Dspark.ui.reverseProxyUrl=http://localhost #you can choose any domain name
 worker:
-  replicas: 2 #setup number of workers and resources for each one
+  replicas: 1 #setup number of workers and resources for each one
   resources:
     requests:
       memory: "2.5Gi"

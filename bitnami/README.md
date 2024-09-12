@@ -41,7 +41,7 @@ helm uninstall spark-release -n spark
 
 ### Check if kubernetes is running
 kubectl get nodes -n spark
-```
+```s
 
 2. Enable Spark UI
 
@@ -64,10 +64,10 @@ spark-release-master-svc:7077
 note: default deploy-mode value is "client"
 
 kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
-  --deploy-mode client \ 
+  --deploy-mode client \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --class org.apache.spark.examples.SparkPi \
-  /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 500
+  /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 5000
 
 2. Running spark-pi pyspark code:
 
@@ -107,6 +107,8 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
   --executor-cores 4  \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --conf spark.standalone.submit.waitAppCompletion=true \
+  --conf spark.ui.reverseProxy=true \
+  --conf spark.ui.reverseProxyUrl=http://localhost \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 500
 
@@ -119,6 +121,8 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
   --executor-cores 2  \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --conf spark.standalone.submit.waitAppCompletion=true \
+  --conf spark.ui.reverseProxy=true \
+  --conf spark.ui.reverseProxyUrl=http://localhost \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/src/main/python/pi.py 500
 
