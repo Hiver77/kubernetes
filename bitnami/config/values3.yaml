@@ -1,0 +1,21 @@
+service:
+  type: LoadBalancer
+master:
+  configOptions:
+    -Dspark.ui.reverseProxy=true
+    -Dspark.ui.reverseProxyUrl=http://localhost #you can choose any domain name
+worker:
+  replicaCount: 1 #setup number of workers and resources for each one
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "1"
+    limits:
+      memory: "2Gi"
+      cpu: "4"
+  configOptions:
+    -Dspark.ui.reverseProxy=true
+    -Dspark.ui.reverseProxyUrl=http://localhost
+ingress:
+  enabled: true
+  hostname: localhost

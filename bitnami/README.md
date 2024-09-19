@@ -35,6 +35,9 @@ You can choose the number of workers to deploy as helm parameters:
 --set worker.replicaCount=2
 otherwise, you can do it inside values.yaml file that was described before
 
+If you want to update the configs
+helm update spark-release bitnami/spark -f config/values.yaml --namespace spark 
+
 ### uninstall all pods for release name:
 helm ls -n spark
 helm uninstall spark-release -n spark
@@ -64,7 +67,7 @@ spark-release-master-svc:7077
 note: default deploy-mode value is "client"
 
 kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
-  --deploy-mode client \
+  --deploy-mode cluster \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --class org.apache.spark.examples.SparkPi \
   /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 5000
@@ -90,10 +93,63 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
   /opt/bitnami/spark/tmp/pysparkexample.py
 
   3.1 Running with your own modules
+
+  dataset: https://www.datablist.com/learn/csv/download-sample-csv-files
+
+  kubectl cp Samples/customers-2000000.csv spark-release-master-0:/opt/bitnami/spark/tmp -n spark
+  kubectl cp Samples/customers-2000000.csv spark-release-worker-0:/opt/bitnami/spark/tmp -n spark
+
+  kubectl cp examples/customers spark-release-master-0:/opt/bitnami/spark/tmp -n spark
+
+  scenario 1:
+
+  create cluter: 
+  helm install spark-release bitnami/spark -f config/values2.yaml  --namespace spark --create-namespace
+
   kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
     --deploy-mode client \
-    --py-files file1.py,file2.py,file3.zip \
-    /opt/bitnami/spark/tmp/pysparkexample.py
+    --conf spark.kubernetes.container.image=bitnami/spark:3 \
+    --conf spark.standalone.submit.waitAppCompletion=true \
+    --conf spark.ui.reverseProxy=true \
+    --conf spark.ui.reverseProxyUrl=http://localhost \
+    --py-files tmp/customers/config.py,tmp/customers/transform.py \
+    /opt/bitnami/spark/tmp/customers/main.py
+
+  scenario 2:
+  create cluter: 
+  helm uninstall spark-release -n spark
+
+  helm install spark-release bitnami/spark -f config/values2.yaml  --namespace spark --create-namespace
+
+  kubectl cp Samples/customers-2000000.csv spark-release-worker-1:/opt/bitnami/spark/tmp -n spark
+
+  kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
+    --deploy-mode client \
+    --conf spark.kubernetes.container.image=bitnami/spark:3 \
+    --conf spark.standalone.submit.waitAppCompletion=true \
+    --conf spark.ui.reverseProxy=true \
+    --conf spark.ui.reverseProxyUrl=http://localhost \
+    --py-files tmp/customers/config.py,tmp/customers/transform.py \
+    /opt/bitnami/spark/tmp/customers/main.py
+
+  scenario 3:
+  create cluter:
+  helm uninstall spark-release -n spark
+
+  helm install spark-release bitnami/spark -f config/values3.yaml  --namespace spark --create-namespace
+
+
+  kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark://spark-release-master-svc:7077 \
+    --deploy-mode client \
+    --driver-memory 1g \
+    --executor-memory 1g \
+    --executor-cores 2  \
+    --conf spark.kubernetes.container.image=bitnami/spark:3 \
+    --conf spark.standalone.submit.waitAppCompletion=true \
+    --conf spark.ui.reverseProxy=true \
+    --conf spark.ui.reverseProxyUrl=http://localhost \
+    --py-files tmp/customers/config.py,tmp/customers/transform.py \
+    /opt/bitnami/spark/tmp/customers/main.py
 
 
 4. Tunning nodes resources
@@ -104,13 +160,13 @@ kubectl exec -ti -n spark spark-release-master-0 -- spark-submit --master spark:
   --deploy-mode cluster \
   --driver-memory 1g \
   --executor-memory 1g \
-  --executor-cores 4  \
+  --executor-cores 1  \
   --conf spark.kubernetes.container.image=bitnami/spark:3 \
   --conf spark.standalone.submit.waitAppCompletion=true \
   --conf spark.ui.reverseProxy=true \
   --conf spark.ui.reverseProxyUrl=http://localhost \
   --class org.apache.spark.examples.SparkPi \
-  /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 500
+  /opt/bitnami/spark/examples/jars/spark-examples_2.12-3.5.1.jar 5000
 
 note: Since cluster deploy mode is currently not supported for python applications on standalone clusters, we are gonna use client mode.
 
@@ -153,42 +209,34 @@ chmod 777 pyspark
 6.4 run the pysparkexample_terminal.py script line by line to play with terminal
 
 
-3. Enable Kubernetes dashboard
+7. Enable Kubernetes dashboard
 ```console
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
 ```
-3.1 create Creating sample user
+7.1 create Creating sample user
 We are going to crea a new servicesAccount with cluster-admin permissions
 ```console
 kubectl apply -f dashboard-adminuser.yaml
 ```
 
-3.2 Open Kubernetes dashboard
+7.2 Open Kubernetes dashboard
 ```console
  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 ```
 
-3.3 Generate a new token
+7.3 Generate a new token
 ```console
 kubectl -n kubernetes-dashboard create token admin-user
 ```
 Go to URL: 127.0.0.1:8443
 
-3.4 clean up
+7.4 clean up
 ```console
 kubectl -n kubernetes-dashboard delete serviceaccount admin-user
 kubectl -n kubernetes-dashboard delete clusterrolebinding admin-user
 ```
 
-
-kubectl exec -ti -n spark spark-release-master-0 -- spark-submit \
-  --master spark://spark-release-master-svc:7077 \
-  --deploy-mode client \
-  --driver-memory 1g \
-  --executor-memory 1g \
-  --executor-cores 2  \
-/opt/bitnami/spark/tmp/pysparkexample.py
 
 
 
